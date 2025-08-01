@@ -1,6 +1,5 @@
-import type { AssetConfig } from './AssetsConfig';
 
-export const ENVIRONMENT: Record<string, AssetConfig> = {
+export const ENVIRONMENT = {
   SKY: {
     key: 'sky',
     url: 'src/assets/sky.png',

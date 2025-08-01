@@ -1,7 +1,6 @@
-import { Player } from '../domain/Player';
-import { GAME_ASSETS } from './assets/TutorialAssets/AssetsConfig';
+import { Player } from '../../domain/Player';
+import PLAYER from './assets/TutorialAssets/PlayerAssets';
 
-const { DUDE } = GAME_ASSETS;
 
 export class PlayerPhaser {
   // Player properties
@@ -10,10 +9,7 @@ export class PlayerPhaser {
   // Player sprite
   private sprite: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
   private readonly GravityY = 300;
-  private readonly KEY = DUDE.key;
-  private readonly LEFT_ANIM = 'left';
-  private readonly RIGHT_ANIM = 'right';
-  private readonly TURN_ANIM = 'turn';
+  private readonly KEY = PLAYER.key;
 
   //Movement properties
   readonly groundDeceleration = 5;
@@ -25,27 +21,7 @@ export class PlayerPhaser {
 
     this.sprite.setBounce(0.2);
     this.sprite.setCollideWorldBounds(true);
-
-    scene.anims.create({
-      key: this.LEFT_ANIM,
-      frames: scene.anims.generateFrameNumbers(DUDE.key, { start: 0, end: 3 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    scene.anims.create({
-      key: this.TURN_ANIM,
-      frames: [{ key: 'dude', frame: 4 }],
-      frameRate: 20,
-    });
-
-    scene.anims.create({
-      key: this.RIGHT_ANIM,
-      frames: scene.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
+    
     this.sprite.body.setGravityY(this.GravityY);
   }
 
@@ -54,10 +30,16 @@ export class PlayerPhaser {
     environment:
       | Phaser.Physics.Arcade.Sprite
       | Phaser.Physics.Arcade.StaticGroup
-      | undefined
+      | undefined,
+    players: Map<string, PlayerPhaser>
   ) {
     if (!environment) throw new Error('Environment is not defined');
     scene.physics.add.collider(this.sprite, environment);
+    if (players) {
+      players.forEach((player) => {
+        scene.physics.add.collider(this.sprite, player.sprite);
+      });
+    }
   }
 
   movePlayer(cursors: Phaser.Types.Input.Keyboard.CursorKeys | undefined) {
@@ -70,10 +52,10 @@ export class PlayerPhaser {
 
     if (cursors.left.isDown) {
       this.sprite.setVelocityX(-160);
-      this.sprite.anims.play(this.LEFT_ANIM, true);
+      this.sprite.anims.play(PLAYER.animations.left, true);
     } else if (cursors.right.isDown) {
       this.sprite.setVelocityX(160);
-      this.sprite.anims.play(this.RIGHT_ANIM, true);
+      this.sprite.anims.play(PLAYER.animations.right, true);
     } else {
       if (this.sprite.body.velocity.x > 0) {
         this.sprite.setVelocityX(
@@ -85,7 +67,7 @@ export class PlayerPhaser {
         );
       }
       if (this.sprite.body.velocity.x === 0 && this.sprite.body.touching.down) {
-        this.sprite.anims.play(this.TURN_ANIM);
+        this.sprite.anims.play(PLAYER.animations.turn);
       }
     }
 

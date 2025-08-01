@@ -1,7 +1,6 @@
 import { useEffect, useRef } from 'react';
+import { GamePhaser } from './infrastructure/ui/GamePhaser';
 import './App.css';
-// import startGame from '././Infrastructure/GamePhaser
-import { GamePhaser } from './infrastructure/GamePhaser';
 
 function App() {
   const divID = 'game-container';

@@ -16,7 +16,7 @@ export class GamePhaser {
         default: 'arcade',
         arcade: {
           gravity: this.Gravity,
-          debug: false,
+          debug: true,
         },
       },
       parent: containerId,
